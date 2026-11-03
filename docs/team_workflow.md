@@ -1,0 +1,6 @@
+- Never commit directly to main
+- One branch per task: feature/<short-name>
+- Open a Pull Request, get 1 review before merging
+- git pull origin main before starting work each day
+- Do not commit data files
+- One person edits a given notebook at a time
