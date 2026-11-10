@@ -1,6 +1,4 @@
-# Netflix titles – Person 1: loading and basic cleaning
-
-**Hands over:** the same 12 columns, whitespace cleaned, data errors fixed, no duplicates.
+# Netflix titles
 
 ## Files
 | File | Purpose |
@@ -9,9 +7,6 @@
 | `netflix_clean.csv` | Cleaned dataset (8,806 rows × 12 columns) |
 | `removed_duplicates.csv` | Rows dropped in Step 4 (audit trail) |
 | `quarantine_ratings.csv` | Ratings not in the valid certificate list (empty for this file) |
-
-## How to run
-Open the notebook in Google Colab → **Runtime → Run all** → upload `netflix_titles.csv` when asked.
 
 ## What was done
 1. **Load raw** – all columns as text, 12 expected columns verified, row count matches the file (8,807), checksum logged.
