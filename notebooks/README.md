@@ -14,7 +14,7 @@
 3. **Fix shifted durations** – 3 rows with `'74 min'`-style values in `rating` moved to `duration`.
 4. **Drop duplicates** – 0 exact duplicates; 1 title+type+release_year duplicate removed ("Consequences", 2014), keep first.
 
-## Missing Values and Final Validation
+# Missing Values and Final Validation
 
 ### Files
 
