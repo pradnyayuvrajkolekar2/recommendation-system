@@ -87,45 +87,45 @@ def get_split(df,path=SPLIT_PATH):
         print("Craeted and saved split")
 
 #get row lookups and value and test ids
-        row_lookup=pd.Series(np.arange(len(df)),index=df[ID_COL])
-        val_ids_order=split_df.loc[split_df["split"]== "val",ID_COL]
-        test_ids_order= split_df.loc[split_df["split"]== "test",ID_COL]
-        value_index=row_lookup.loc[val_ids_order].to_numpy()
-        test_index= row_lookup.loc[test_ids_order].to_numpy()
+    row_lookup=pd.Series(np.arange(len(df)),index=df[ID_COL])
+    val_ids_order=split_df.loc[split_df["split"]== "val",ID_COL]
+    test_ids_order= split_df.loc[split_df["split"]== "test",ID_COL]
+    value_index=row_lookup.loc[val_ids_order].to_numpy()
+    test_index= row_lookup.loc[test_ids_order].to_numpy()
 #return value and test indexes
-        return value_index,test_index
+    return value_index,test_index
 
 #fit the model with the parameters
-    def fit_tfidf(df,params):
-        vec=TfidfVectorizer(**params)
-        mat=vec.fit_transform(df[SOUP_COL])
-        return vec,mat
+def fit_tfidf(df,params):
+    vec=TfidfVectorizer(**params)
+    mat=vec.fit_transform(df[SOUP_COL])
+    return vec,mat
 #getting recommendations and scores
-    def rec_by_sim(X,query_index,k=K,batch_size=500):
 
-        query_index=np.asarray(query_index)
-        no_of_queries=len(query_index)
+def rec_by_sim(X,query_index,k=K,batch_size=500):
+    query_index=np.asarray(query_index)
+    no_of_queries=len(query_index)
 #empty arrays initialized for scores and recs
-        recs= np.empty((no_of_queries,k),dtype=int)
-        scores= np.empty((no_of_queries,k),dtype=np.float32)
+    recs= np.empty((no_of_queries,k),dtype=int)
+    scores= np.empty((no_of_queries,k),dtype=np.float32)
 
-        for start in range(0,no_of_queries,batch_size):
-            end=min(start+batch_size,no_of_queries)
-            q_rows=query_index[start:end]
+    for start in range(0,no_of_queries,batch_size):
+        end=min(start+batch_size,no_of_queries)
+        q_rows=query_index[start:end]
 #get similarities
-            sims=(X[q_rows]@X.T).toarray()
-            sims[np.arange(len(q_rows)),q_rows]=-np.inf
+        sims=(X[q_rows]@X.T).toarray()
+        sims[np.arange(len(q_rows)),q_rows]=-np.inf
 #get top columns and scores
-            top_cols=np.argsort(-sims,axis=1)[:,:k]
-            top_scores=np.take_along_axis(sims,top_cols,axis=1)
+        top_cols=np.argsort(-sims,axis=1)[:,:k]
+        top_scores=np.take_along_axis(sims,top_cols,axis=1)
 
-            recs[start:end]=top_cols
-            scores[start:end]=top_scores
+        recs[start:end]=top_cols
+        scores[start:end]=top_scores
 #return the recs and scores
-        return recs, scores
+    return recs, scores
 
 #saving the recommendations into dataframe and saving it at output path
-    def save_rec(df,query_index,recs,scores,model_name):
+def save_rec(df,query_index,recs,scores,model_name):
         k=recs.shape[1]
         shows_ids=df[ID_COL].to_numpy()
 
@@ -146,7 +146,7 @@ def get_split(df,path=SPLIT_PATH):
 
 
 
-    if __name__=="__main__":
+if __name__=="__main__":
         #laod data
         df=load_data()
         #cehck for leakage
