@@ -1,9 +1,13 @@
-import os
+import os, sys
 import numpy as np
 from pathlib import Path
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
+from itertools import product
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+from evaluation import evaluate, format_results, genre_matrix
 
 # define teh random state ,k value and teh columns
 SEED =42
@@ -140,31 +144,48 @@ def save_rec(df,query_index,recs,scores,model_name):
 
         out_path=RESULTS_DIR/f"recs_{model_name}.parquet"
         out.to_parquet(out_path,index=False)
-        print("Saved he output")
+        print("Saved the output")
 
         return str(out_path)
 
 
 
 if __name__=="__main__":
-        #laod data
-        df=load_data()
+        #laod data, genre answer key, shared split
+        df=load_data(CLEAN_PATH)
+        genre_matrix=genre_matrix(df)
         #cehck for leakage
         leakage(df)
         #get teh split
         val_index,test_index=get_split(df)
-#fit the data
-        _,X=fit_tfidf(df,{"sublinear_tf":True})
-        sample_queries=val_index[:3]
-        #get recommendations
-        recs,_ =rec_by_sim(X,sample_queries)
-#get top titles
-        for q_idx,rec_row in zip(sample_queries,recs):
-            title=df.loc[q_idx,TITLE_COL]
-            top_titles=df.loc[rec_row[:3],TITLE_COL].tolist()
-            print(f"{title}-> {top_titles}")
 
-        print("part a complete")
+        #tube hyperparameters on validation queries
+        param_grid={
+            "ngram_range": [(1,1),(1,2)],
+            "min_df":[1,2,3],
+            "max_features":[None,5000,20000],
+            "sublinear_tf":[False,True],
+        }
+        combos = [dict(zip(param_grid, values)) for values in product(*param_grid.values())]
+
+        rows=[]
+        for params in combos:
+            vec,mat=fit_tfidf(df, params)
+            recs,scores=rec_by_sim(mat,val_index,k=K)
+            metrics=evaluate(genre_matrix,val_index,recs,k=K)
+            rows.append({"model":f"tfidf_{params}","params":params,**metrics})
+            print(f"Evaluated {params}: {format_results(metrics)}")
+
+        tuning_df = pd.DataFrame(rows).sort_values("precision", ascending=False)
+        tuning_df.to_csv(RESULTS_DIR/f"tuning_results.csv",index=False)
+        best_params= combos[int(tuning_df.index[0])]
+        print(f"Best parameters: {best_params}")
+
+        # final model with best params
+        _, best_mat = fit_tfidf(df, best_params)
+        test_recs, test_scores = rec_by_sim(best_mat, test_index, k=K)
+        save_rec(df, test_index, test_recs, test_scores, "tfidf")
+        print("TFIDF is complete")
 
 
     
