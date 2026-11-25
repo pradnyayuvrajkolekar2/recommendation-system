@@ -19,7 +19,7 @@ INPUT_PARQUET = "parsed_netflix_data_features.parquet"
 RESULTS_DIR = "results"
 os.makedirs(RESULTS_DIR, exist_ok=True)
 RANDOM_SEED = 42
-
+!cp /content/sample_data/parsed_netflix_data_features.parquet /content/
 # df = pd.read_parquet("/content/sample_data/parsed_netflix_data_features.parquet").reset_index(drop=True)
 df = pd.read_parquet(INPUT_PARQUET).reset_index(drop=True)
 print(f"Loaded catalog: {df.shape[0]} titles, {df.shape[1]} columns.")
@@ -162,6 +162,17 @@ plt.title("LSA: Explained variance vs components")
 plt.legend()
 plt.grid(True, alpha=0.3)
 plt.savefig(f"{RESULTS_DIR}/lsa_explained_variance.png", dpi=150, bbox_inches="tight")
+plt.show()
+
+plt.figure(figsize=(7, 4))
+for name, g in tuning_df.groupby("tfidf_config"):
+    plt.plot(g["n_components"], g["val_precision@10"], marker="o", label=name)
+plt.xlabel("Number of components")
+plt.ylabel("Validation Precision@10")
+plt.title("LSA: Validation Precision@10 vs components")
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.savefig(f"{RESULTS_DIR}/lsa_val_precision_vs_components.png", dpi=150, bbox_inches="tight")
 plt.show()
 
 """## Latent Topic Interpretation (Top Words per Topic)
