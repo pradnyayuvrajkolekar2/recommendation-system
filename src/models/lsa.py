@@ -282,3 +282,45 @@ importlib.reload(evaluation)
 
 # Pradnya's evaluation run
 evaluation.compare_all()
+
+import os
+import matplotlib.pyplot as plt
+
+os.makedirs("/content/reports/figures", exist_ok=True)
+
+# Graph 1: Explained Variance
+plt.figure(figsize=(7,4))
+
+for name, g in tuning_df.groupby("tfidf_config"):
+    plt.plot(g["n_components"], g["explained_variance_%"],
+             marker="o", label=name)
+
+plt.xlabel("Number of components")
+plt.ylabel("Explained variance (%)")
+plt.title("LSA: Explained Variance vs Components")
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+plt.savefig("/content/reports/figures/lsa_explained_variance.png",
+            dpi=150, bbox_inches="tight")
+plt.show()
+
+
+# Graph 2: Validation Precision
+plt.figure(figsize=(7,4))
+
+for name, g in tuning_df.groupby("tfidf_config"):
+    plt.plot(g["n_components"], g["precision"],
+             marker="o", label=name)
+
+plt.xlabel("Number of components")
+plt.ylabel("Validation Precision")
+plt.title("LSA: Validation Precision vs Components")
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+plt.savefig("/content/reports/figures/lsa_val_precision_vs_components.png",
+            dpi=150, bbox_inches="tight")
+plt.show()
+
+print("Both graphs saved successfully!")
