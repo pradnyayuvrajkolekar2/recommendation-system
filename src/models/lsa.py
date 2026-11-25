@@ -324,3 +324,11 @@ plt.savefig("/content/reports/figures/lsa_val_precision_vs_components.png",
 plt.show()
 
 print("Both graphs saved successfully!")
+
+import os
+
+print(os.listdir("results"))
+
+from google.colab import files
+
+files.download("results/model_comparison.csv")
