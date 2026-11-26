@@ -55,7 +55,7 @@ python modelling_and_evaluation.py
  
 **Where:** `notebooks/`. **Input:** `data/raw/netflix_titles.csv`. **Output:** `data/processed/parsed_netflix_data_features.parquet`.
  
-- **Cleaning:** whitespace and empty values standardised, shifted duration values fixed, duplicates removed, missing director/cast/country set to "Unknown".
+- **Cleaning:** whitespace and empty values standardised, shifted duration values fixed, duplicates removed, missing director/cast/country/rating set to "Unknown".
 - **Parsing:** dates parsed, duration split into minutes (films) and seasons (shows), maturity ratings grouped, multi-valued fields split into lists.
 - **Text cleaning:** descriptions lower-cased, accents and punctuation removed, English stop words dropped.
 - **Text field ("soup"):** cleaned description plus directors, top-three cast and primary country, each name joined into one token (e.g. `kirstenjohnson`).
@@ -110,5 +110,5 @@ Scores every `results/recs_<model>.parquet` file, plus a random baseline, on the
  
 - Genre overlap is only a proxy for a good recommendation; with no user data, results are not personalised and evaluation is offline only.
 - LSA was tuned over fewer configurations than TF-IDF, so part of the gap may come from settings rather than the SVD step.
-- Results come from a single 2021 catalogue snapshot and one train/test split.
+- Results come from a single train/test split, without confidence intervals or significance tests.
 
