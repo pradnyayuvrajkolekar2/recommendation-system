@@ -1,6 +1,6 @@
 # Netflix Content-Based Recommender
  
-A content-based recommender that suggests similar Netflix titles from their descriptions, directors, cast and country. It is built on the Kaggle **Netflix Movies and TV Shows** dataset (8,803 titles, 12 raw columns).
+A content-based recommender that suggests similar Netflix titles from their descriptions, directors, cast and country. It is built on the Kaggle **Netflix Movies and TV Shows** dataset (8,807 titles, 12 raw columns).
  
 The dataset has **no user ratings**, so collaborative filtering is not possible. Instead, for any title the system recommends the 10 most similar titles. Genres are hidden from the models and used only as the answer key for evaluation.
  
